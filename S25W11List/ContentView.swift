@@ -26,9 +26,12 @@ struct MyList: View {
 struct SongItem: View {
     let song: Song
     var body: some View {
-        VStack {
-            TextTitle(title: song.title)
-            TextSinger(singer: song.singer)
+        HStack(spacing: 16) {
+            ImageAlbum(albumUrl: makeAlbumUrl(id: song.id))
+            VStack {
+                TextTitle(title: song.title)
+                TextSinger(singer: song.singer)
+            }
         }
         .padding()
     }
@@ -38,8 +41,10 @@ struct TextTitle: View {
     let title: String
     var body: some View {
         Text(title)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .font(.headline)
-            .foregroundColor(.gray)
+            .foregroundColor(.blue)
+            .background(.yellow)
             .padding()
     }
 }
@@ -52,6 +57,23 @@ struct TextSinger: View {
             .font(.caption)
             .foregroundColor(.gray)
             .padding()
+    }
+}
+
+func makeAlbumUrl(id: UUID) -> URL {
+    URL(string: "https://picsum.photos/80/80?random=\(id)")!
+}
+
+struct ImageAlbum: View {
+    let albumUrl: URL
+    var body: some View {
+        AsyncImage(url: albumUrl) { image in
+            image
+                .image?.resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 80, height: 80)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+        }
     }
 }
 
